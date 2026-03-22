@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="SchoolPEPProject" name="SchoolPEPProject" framework="JPA" ormUnit="SchoolPEPProject:SchoolPEPProject" defaultDataSourceId="34693c86-bbaf-40ea-8ac2-055ee4823b88" />
+    </persistence-units>
+  </component>
+</project>
