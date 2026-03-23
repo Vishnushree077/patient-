@@ -1,12 +1,16 @@
 package nimblix.in.HealthCareHub.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import nimblix.in.HealthCareHub.constants.HealthCareConstants;
 import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.model.Medicine;
+import nimblix.in.HealthCareHub.repository.DoctorRepository;
 import nimblix.in.HealthCareHub.repository.HospitalRepository;
 import nimblix.in.HealthCareHub.repository.MedicineRepository;
 import nimblix.in.HealthCareHub.request.HospitalRegistrationRequest;
 import nimblix.in.HealthCareHub.request.MedicineAddRequest;
+import nimblix.in.HealthCareHub.response.HospitalFilterResponse;
+import nimblix.in.HealthCareHub.response.HospitalStatsResponse;
 import nimblix.in.HealthCareHub.response.RoomResponse;
 import nimblix.in.HealthCareHub.service.HospitalService;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -21,6 +26,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
     private final MedicineRepository medicineRepository;
+    private final DoctorRepository doctorRepository;
     @Override
     public String registerHospital(HospitalRegistrationRequest request) {
 
@@ -128,5 +134,51 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         return response;
+    }
+    @Override
+    public List<HospitalFilterResponse> filterBySpecialization(String specialization) {
+        if (specialization == null || specialization.trim().isEmpty())
+            throw new IllegalArgumentException("Specialization cannot be blank");
+
+        List<Hospital> hospitals = doctorRepository
+                .findDistinctHospitalsBySpecializationName(specialization.trim());
+
+        return hospitals.stream()
+                .map(h -> HospitalFilterResponse.builder()
+                        .hospitalId(h.getId())
+                        .name(h.getName())
+                        .address(h.getAddress())
+                        .city(h.getCity())
+                        .state(h.getState())
+                        .phone(h.getPhone())
+                        .email(h.getEmail())
+                        .totalBeds(h.getTotalBeds())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public HospitalStatsResponse getHospitalStats(Long hospitalId) {
+        Hospital hospital = hospitalRepository.findById(hospitalId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        HealthCareConstants.HOSPITAL_NOT_FOUND));
+
+        long totalDoctors = doctorRepository.countByHospitalId(hospitalId);
+
+        int totalRooms = hospital.getRooms().size();
+        int availableRooms = (int) hospital.getRooms().stream()
+                .filter(Hospital.Room::isAvailable)
+                .count();
+        int occupiedRooms = totalRooms - availableRooms;
+
+        return HospitalStatsResponse.builder()
+                .hospitalId(hospital.getId())
+                .hospitalName(hospital.getName())
+                .totalBeds(hospital.getTotalBeds())
+                .totalRooms(totalRooms)
+                .availableRooms(availableRooms)
+                .occupiedRooms(occupiedRooms)
+                .totalDoctors((int) totalDoctors)
+                .build();
     }
 }

@@ -25,13 +25,13 @@ public class HealthCareConstants {
     public static String SCHOOLS_LIST ="Schools list" ;
     public static String SUBSCRIPTION_TRAIL ="TRIAL" ;
     public static String TEACHER_ROLE ="TEACHER" ;
-    public static  String DATA = "Data";
+    public static String DATA = "Data";
     public static String IN_ACTIVE ="inActive" ;
     public static String STATUS_SUCCESS ="SUCCESS" ;
     public static final String STUDENT ="STUDENT" ;
     public static String STUDENT_NOT_FOUND ="Student not found" ;
     public static String STATUS_FAILURE ="FAILED" ;
-    public static  String STATUS ="status" ;
+    public static String STATUS ="status" ;
     public static String ACTIVE = "active";
     public static String PENDING = "PENDING";
     public static String FAILED = "FAILED";
@@ -48,4 +48,6 @@ public class HealthCareConstants {
     public static final String DOCTOR_NOT_BELONG_TO_HOSPITAL = "Doctor not belong to hospital";
     public static final String DOCTOR_NOT_FOUND = "Doctor not found";
     public static final String REVIEWS_FETCHED_SUCCESSFULLY = "Reviews fetched successfully";
+    public static final String HOSPITALS_FETCHED_SUCCESSFULLY = "Hospitals fetched successfully";
+    public static final String HOSPITAL_STATS_FETCHED_SUCCESSFULLY = "Hospital statistics fetched successfully";
 }
