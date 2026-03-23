@@ -1,20 +1,26 @@
 package nimblix.in.HealthCareHub.response;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Setter
+@Getter
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class ApiResponse<T> {
 
-    private String status;
+    private boolean success;
     private String message;
     private T data;
+
+    public ApiResponse() {}
+
+    public ApiResponse(boolean success, String message, T data) {
+        this.success = success;
+        this.message = message;
+        this.data = data;
+    }
 
 
 

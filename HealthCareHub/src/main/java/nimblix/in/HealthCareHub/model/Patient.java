@@ -21,7 +21,8 @@ public class Patient {
     private String gender;
     private String phone;
     private String disease;
-
+    private String email;
+    private String password;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

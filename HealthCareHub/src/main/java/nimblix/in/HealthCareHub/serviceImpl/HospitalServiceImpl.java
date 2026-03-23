@@ -1,6 +1,7 @@
 package nimblix.in.HealthCareHub.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import nimblix.in.HealthCareHub.DTO.HospitalDTO;
 import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.model.Medicine;
 import nimblix.in.HealthCareHub.repository.HospitalRepository;
@@ -21,6 +22,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
     private final MedicineRepository medicineRepository;
+
     @Override
     public String registerHospital(HospitalRegistrationRequest request) {
 
@@ -43,25 +45,26 @@ public class HospitalServiceImpl implements HospitalService {
 
         return "Hospital Registered Successfully";
     }
+
     @Override
-    public String addMedicine(MedicineAddRequest request){
+    public String addMedicine(MedicineAddRequest request) {
 
         //-edge cases---
         //--Check Hospital Exists--
         Hospital hospital = hospitalRepository.findById(request.getHospitalId())
                 .orElseThrow(() -> new IllegalArgumentException("Hospital Not Found"));
 
-        if (request.getPrice()==null || request.getPrice()<=0){
+        if (request.getPrice() == null || request.getPrice() <= 0) {
             throw new IllegalArgumentException("price must be greater than 0");
         }
 
-        if (request.getStockQuantity()==null || request.getStockQuantity()<0){
+        if (request.getStockQuantity() == null || request.getStockQuantity() < 0) {
             throw new IllegalArgumentException("StockQuantity cannot be negative ");
         }
 
         Optional<Medicine> existing = medicineRepository.findByMedicineNameAndHospital(
                 request.getMedicineName(), hospital);
-        if (existing.isPresent()){
+        if (existing.isPresent()) {
             throw new IllegalArgumentException("Medicine already exists in this hospital");
         }
 
@@ -81,7 +84,6 @@ public class HospitalServiceImpl implements HospitalService {
         medicineRepository.save(medicine);
         return "Medicine Added Successfully";
     }
-
 
 
     @Override
@@ -128,5 +130,19 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         return response;
+    }
+
+    @Override
+    public List<HospitalDTO> getAllHospitals() {
+
+        List<Hospital> hospitals = hospitalRepository.findAll();
+
+        return hospitals.stream()
+                .map(h -> new HospitalDTO(
+                        h.getId(),
+                        h.getName(),
+                        h.getAddress()
+                ))
+                .toList();
     }
 }
