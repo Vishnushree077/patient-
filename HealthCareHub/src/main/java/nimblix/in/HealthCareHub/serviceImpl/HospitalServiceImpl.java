@@ -59,11 +59,11 @@ public class HospitalServiceImpl implements HospitalService {
             throw new IllegalArgumentException("StockQuantity cannot be negative ");
         }
 
-        Optional<Medicine> existing = medicineRepository.findByMedicineNameAndHospital(
-                request.getMedicineName(), hospital);
-        if (existing.isPresent()){
-            throw new IllegalArgumentException("Medicine already exists in this hospital");
-        }
+//        Optional<Medicine> existing = medicineRepository.findByMedicineNameAndHospital(
+//                request.getMedicineName(), hospital);
+//        if (existing.isPresent()){
+//            throw new IllegalArgumentException("Medicine already exists in this hospital");
+//        }
 
         //--Create Medicine--
         Medicine medicine = Medicine.builder()

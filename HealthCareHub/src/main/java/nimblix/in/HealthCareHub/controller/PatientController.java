@@ -6,7 +6,9 @@ import nimblix.in.HealthCareHub.request.AdmitPatientRequest;
 import nimblix.in.HealthCareHub.request.ResetPasswordRequest;
 import nimblix.in.HealthCareHub.response.AdmitPatientResponse;
 import nimblix.in.HealthCareHub.response.LabResultResponse;
+import nimblix.in.HealthCareHub.response.ReviewResponse;
 import nimblix.in.HealthCareHub.service.AdmissionService;
+import nimblix.in.HealthCareHub.service.DoctorService;
 import nimblix.in.HealthCareHub.service.LabResultService;
 import nimblix.in.HealthCareHub.service.PatientService;
 import nimblix.in.HealthCareHub.utility.HealthCareUtil;
@@ -26,6 +28,7 @@ public class PatientController {
     private final AdmissionService admissionService;
     private final LabResultService labResultService;
     private final PatientService patientService;
+    private final DoctorService doctorService;
 
    /*
        Description of this API
@@ -78,6 +81,19 @@ public class PatientController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/doctors/{doctorId}/reviews")
+    public ResponseEntity<Map<String, Object>> getDoctorReviews(
+            @PathVariable Long doctorId) {
+
+        List<ReviewResponse> data = doctorService.getReviewsByDoctor(doctorId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put(HealthCareConstants.STATUS, HttpStatus.OK.value());
+        response.put(HealthCareConstants.MESSAGE, HealthCareConstants.REVIEWS_FETCHED_SUCCESSFULLY);
+        response.put(HealthCareConstants.COUNT, data.size());
+        response.put(HealthCareConstants.DATA, data);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
         @PostMapping("/reset-password")
         public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
             String response = patientService.resetPassword(request);

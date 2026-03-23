@@ -47,4 +47,5 @@ public class HealthCareConstants {
     public static final String SPECIALIZATION_NOT_FOUND = "Specialization not found";
     public static final String DOCTOR_NOT_BELONG_TO_HOSPITAL = "Doctor not belong to hospital";
     public static final String DOCTOR_NOT_FOUND = "Doctor not found";
+    public static final String REVIEWS_FETCHED_SUCCESSFULLY = "Reviews fetched successfully";
 }
