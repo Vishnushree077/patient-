@@ -50,4 +50,6 @@ public class HealthCareConstants {
     public static final String REVIEWS_FETCHED_SUCCESSFULLY = "Reviews fetched successfully";
     public static final String HOSPITALS_FETCHED_SUCCESSFULLY = "Hospitals fetched successfully";
     public static final String HOSPITAL_STATS_FETCHED_SUCCESSFULLY = "Hospital statistics fetched successfully";
+
+    public static final String PRESCRIPTION_FETCHED_SUCCESSFULLY = "Prescription fetched successfully";
 }

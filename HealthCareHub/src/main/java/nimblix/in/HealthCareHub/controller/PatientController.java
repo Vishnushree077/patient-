@@ -6,12 +6,12 @@ import nimblix.in.HealthCareHub.request.AdmitPatientRequest;
 import nimblix.in.HealthCareHub.request.ResetPasswordRequest;
 import nimblix.in.HealthCareHub.response.AdmitPatientResponse;
 import nimblix.in.HealthCareHub.response.LabResultResponse;
+import nimblix.in.HealthCareHub.response.PrescriptionResponse;
 import nimblix.in.HealthCareHub.response.ReviewResponse;
 import nimblix.in.HealthCareHub.service.AdmissionService;
 import nimblix.in.HealthCareHub.service.DoctorService;
 import nimblix.in.HealthCareHub.service.LabResultService;
 import nimblix.in.HealthCareHub.service.PatientService;
-import nimblix.in.HealthCareHub.utility.HealthCareUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -94,9 +94,52 @@ public class PatientController {
         response.put(HealthCareConstants.DATA, data);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-        @PostMapping("/reset-password")
-        public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
-            String response = patientService.resetPassword(request);
-            return ResponseEntity.ok(response);
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        String response = patientService.resetPassword(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get/prescriptions/{id}")
+    public ResponseEntity<Map<String, Object>> getPrescriptionById(@PathVariable Long id) {
+
+        PrescriptionResponse data = patientService.getPrescriptionById(id);
+
+        if (data == null) {
+            Map<String, Object> error = new HashMap<>();
+            error.put(HealthCareConstants.STATUS, HttpStatus.NOT_FOUND.value());
+            error.put(HealthCareConstants.MESSAGE, "Prescription not found with id: " + id);
+
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
+        else {
+            Map<String, Object> response = new HashMap<>();
+            response.put(HealthCareConstants.STATUS, HttpStatus.OK.value());
+            response.put(HealthCareConstants.MESSAGE, HealthCareConstants.PRESCRIPTION_FETCHED_SUCCESSFULLY);
+            response.put(HealthCareConstants.DATA, data);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+
+    @GetMapping("/get/prescriptionmedicine/{prescriptionId}")
+    public ResponseEntity<Map<String, Object>> getPrescriptionMedicine(@PathVariable Long prescriptionId) {
+
+        String data = patientService.getPrescriptionMedicine(prescriptionId);
+
+        if (data == null) {
+            Map<String, Object> error = new HashMap<>();
+            error.put(HealthCareConstants.STATUS, HttpStatus.NOT_FOUND.value());
+            error.put(HealthCareConstants.MESSAGE, "Prescription not found with id: " + prescriptionId);
+
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        } else {
+            Map<String, Object> response = new HashMap<>();
+            response.put(HealthCareConstants.STATUS, HttpStatus.OK.value());
+            response.put(HealthCareConstants.MESSAGE, "Prescription medicine details fetched successfully");
+            response.put(HealthCareConstants.DATA, data);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+}
