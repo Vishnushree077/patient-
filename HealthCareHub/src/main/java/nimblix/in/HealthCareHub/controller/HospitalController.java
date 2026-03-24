@@ -1,7 +1,8 @@
 package nimblix.in.HealthCareHub.controller;
 
 import lombok.RequiredArgsConstructor;
-import nimblix.in.HealthCareHub.DTO.HospitalDTO;
+
+import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.request.HospitalRegistrationRequest;
 import nimblix.in.HealthCareHub.request.MedicineAddRequest;
 import nimblix.in.HealthCareHub.response.ApiResponse;
@@ -57,13 +58,22 @@ public class HospitalController {
         return hospitalService.getAvailableRooms(hospitalId);
     }
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<List<HospitalDTO>>> getAllHospitals() {
+    public ResponseEntity<ApiResponse<List<Hospital>>> getAllHospitals() {
 
-        List<HospitalDTO> hospitals = hospitalService.getAllHospitals();
+        List<Hospital> hospitals = hospitalService.getAllHospitals();
 
-        ApiResponse<List<HospitalDTO>> response =
+        ApiResponse<List<Hospital>> response =
                 new ApiResponse<>(true, "Hospitals fetched successfully", hospitals);
 
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{hospitalId}")
+    public ResponseEntity<ApiResponse<Hospital>> getHospitalById(@PathVariable Long hospitalId) {
+        // Call service to get the hospital
+        Hospital hospital = hospitalService.getHospitalById(hospitalId);
+
+        // Return success response with the hospital data
+        ApiResponse<Hospital> response = new ApiResponse<>(true, "Hospital fetched successfully", hospital);
         return ResponseEntity.ok(response);
     }
 }

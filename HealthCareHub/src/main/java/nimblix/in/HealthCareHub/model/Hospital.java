@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "hospitals")
 @Getter
 @Setter
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Builder
 public class Hospital {
@@ -33,6 +33,15 @@ public class Hospital {
     private String email;
 
     private Integer totalBeds;
+
+    public Hospital(Long id, String name, String address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+    }
+
+    // IMPORTANT: Always keep a default no-args constructor for JPA
+    public Hospital() {}
 
     @ElementCollection
     @CollectionTable(

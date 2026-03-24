@@ -1,7 +1,6 @@
 package nimblix.in.HealthCareHub.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
-import nimblix.in.HealthCareHub.DTO.HospitalDTO;
 import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.model.Medicine;
 import nimblix.in.HealthCareHub.repository.HospitalRepository;
@@ -133,16 +132,21 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public List<HospitalDTO> getAllHospitals() {
+    public List<Hospital> getAllHospitals() {
 
         List<Hospital> hospitals = hospitalRepository.findAll();
 
         return hospitals.stream()
-                .map(h -> new HospitalDTO(
+                .map(h -> new Hospital(
                         h.getId(),
                         h.getName(),
                         h.getAddress()
                 ))
                 .toList();
+    }
+    @Override
+    public Hospital getHospitalById(Long hospitalId) {
+        return hospitalRepository.findById(hospitalId)
+                .orElseThrow(() -> new RuntimeException("Hospital not found with id: " + hospitalId));
     }
 }

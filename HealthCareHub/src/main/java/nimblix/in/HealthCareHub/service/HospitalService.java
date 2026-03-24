@@ -1,6 +1,6 @@
 package nimblix.in.HealthCareHub.service;
 
-import nimblix.in.HealthCareHub.DTO.HospitalDTO;
+import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.request.HospitalRegistrationRequest;
 
 import nimblix.in.HealthCareHub.request.MedicineAddRequest;
@@ -17,7 +17,8 @@ public interface HospitalService {
     void addRooms(Long hospitalId, List<HospitalRegistrationRequest.Room> rooms);
 
     List<RoomResponse> getAvailableRooms(Long hospitalId);
-    List<HospitalDTO> getAllHospitals();
+    List<Hospital> getAllHospitals();
+    Hospital getHospitalById(Long hospitalId);
 
 
 }

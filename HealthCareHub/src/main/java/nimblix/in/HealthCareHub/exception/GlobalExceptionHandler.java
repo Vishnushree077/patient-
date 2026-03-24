@@ -1,5 +1,6 @@
 package nimblix.in.HealthCareHub.exception;
 
+import nimblix.in.HealthCareHub.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -78,4 +79,18 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException ex) {
+
+        // We create a "false" success response
+        ApiResponse<String> response = new ApiResponse<>(
+                false,
+                ex.getMessage(), // This will be "Hospital not found with id: X"
+                null
+        );
+
+        // We return a 404 NOT FOUND instead of a 500 INTERNAL SERVER ERROR
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 }
