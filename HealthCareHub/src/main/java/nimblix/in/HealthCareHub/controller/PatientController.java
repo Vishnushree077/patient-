@@ -2,11 +2,13 @@ package nimblix.in.HealthCareHub.controller;
 
 import lombok.RequiredArgsConstructor;
 import nimblix.in.HealthCareHub.constants.HealthCareConstants;
+import nimblix.in.HealthCareHub.model.Patient;
 import nimblix.in.HealthCareHub.request.AdmitPatientRequest;
 import nimblix.in.HealthCareHub.response.AdmitPatientResponse;
 import nimblix.in.HealthCareHub.response.LabResultResponse;
 import nimblix.in.HealthCareHub.service.AdmissionService;
 import nimblix.in.HealthCareHub.service.LabResultService;
+import nimblix.in.HealthCareHub.service.PatientService;
 import nimblix.in.HealthCareHub.utility.HealthCareUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/patient")
+@RequestMapping("/api/patients")
 @RequiredArgsConstructor
 public class PatientController {
 
     private final AdmissionService admissionService;
     private final LabResultService labResultService;
-
+    private final PatientService patientService;
 
    /*
        Description of this API
@@ -74,5 +76,18 @@ public class PatientController {
         response.put(HealthCareConstants.DATA, data);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, Object>> registerPatient(
+            @RequestBody Patient patient) {
+        Patient data = patientService.savePatient(patient);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put(HealthCareConstants.STATUS, HttpStatus.CREATED.value());
+        response.put(HealthCareConstants.MESSAGE, "Patient registered successfully");
+        response.put(HealthCareConstants.DATA, data);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

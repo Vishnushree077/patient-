@@ -1,6 +1,7 @@
 package nimblix.in.HealthCareHub.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import nimblix.in.HealthCareHub.constants.HealthCareConstants;
 import nimblix.in.HealthCareHub.model.Hospital;
 import nimblix.in.HealthCareHub.model.Medicine;
 import nimblix.in.HealthCareHub.repository.HospitalRepository;
@@ -9,11 +10,10 @@ import nimblix.in.HealthCareHub.request.HospitalRegistrationRequest;
 import nimblix.in.HealthCareHub.request.MedicineAddRequest;
 import nimblix.in.HealthCareHub.response.RoomResponse;
 import nimblix.in.HealthCareHub.service.HospitalService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -23,7 +23,6 @@ public class HospitalServiceImpl implements HospitalService {
     private final MedicineRepository medicineRepository;
     @Override
     public String registerHospital(HospitalRegistrationRequest request) {
-
 
         if (hospitalRepository.findByName(request.getName()).isPresent()) {
             return "Hospital already exists";
@@ -38,6 +37,23 @@ public class HospitalServiceImpl implements HospitalService {
                 .email(request.getEmail())
                 .totalBeds(request.getTotalBeds())
                 .build();
+
+        // 🔽 ADD THIS PART (this is what is missing)
+        if (request.getRooms() != null && !request.getRooms().isEmpty()) {
+
+            List<Hospital.Room> rooms = new ArrayList<>();
+
+            for (HospitalRegistrationRequest.Room roomReq : request.getRooms()) {
+                Hospital.Room room = new Hospital.Room();
+                room.setRoomNumber(roomReq.getRoomNumber());
+                room.setRoomType(roomReq.getRoomType());
+                room.setAvailable(roomReq.isAvailable());
+
+                rooms.add(room);
+            }
+
+            hospital.setRooms(rooms);
+        }
 
         hospitalRepository.save(hospital);
 
@@ -128,5 +144,42 @@ public class HospitalServiceImpl implements HospitalService {
         }
 
         return response;
+    }
+
+    public Map<String,Object> searchHospitalByName(String hospitalName) {
+
+        List<Hospital> hospitals =
+                hospitalRepository.findByNameContainingIgnoreCase(hospitalName);
+
+        Map<String,Object> response = new HashMap<>();
+
+        if (hospitals.isEmpty()) {
+            response.put(HealthCareConstants.COUNT, 0);
+            response.put(HealthCareConstants.DATA, Collections.emptyList());
+            return response;
+        }
+
+        response.put(HealthCareConstants.COUNT, hospitals.size());
+        response.put(HealthCareConstants.DATA, hospitals);
+
+        return response;
+    }
+
+    @Override
+    public List<Hospital> sortHospitals(String sortBy) {
+
+        List<Hospital> hospitals;
+
+        try {
+            hospitals = hospitalRepository.findAll(Sort.by(sortBy));
+        } catch (Exception e) {
+            return null;
+        }
+
+        if (hospitals.isEmpty()) {
+            return null;
+        }
+
+        return hospitals;
     }
 }
