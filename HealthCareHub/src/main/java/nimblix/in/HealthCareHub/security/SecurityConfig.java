@@ -1,6 +1,7 @@
 package nimblix.in.HealthCareHub.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+@Autowired
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -37,7 +38,8 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/api/doctors/**",
                                 "/api/hospital/**",
-                                "/api/admin/**"
+                                "/api/admin/**",
+                                "/api/subscription/**"
 
                         ).permitAll()
                         .anyRequest().authenticated()
